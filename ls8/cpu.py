@@ -77,4 +77,20 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        pass
+        instruction_register = self.random_access_memory[self.program_counter]
+        operand_a = self.random_access_memory[self.program_counter + 1]
+        operand_b = self.random_access_memory[self.program_counter + 2]
+
+        def LDI(a, b): self.reg[a] = b
+
+        def PRN(a, b = None): print(self.register[a])
+
+        def ADD(a, b): self.register[a] += self.register[b]
+
+        def MUL(a, b): self.register[a] *= self.register[b]
+
+
+
+        while self.is_running:
+
+
