@@ -15,6 +15,15 @@ class CPU:
         self.is_running = True
         self.is_interrupted = False
 
+    def ram_read(self, address):
+        self.memory_data_register = self.random_access_memory[address]
+
+        return self.memory_data_register
+
+    def ram_write(self, value, address):
+        self.random_access_memory[address] = value
+        return 1
+
     def load(self):
         """Load a program into memory."""
 
