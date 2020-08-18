@@ -1,0 +1,12 @@
+ls8DIR:
+    cpu.py: 
+    ls8.py: 
+    examplesDIR:
+        calls.ls8:
+        interrupts.ls8: 
+        keyboard.ls8:
+        mult.ls8:
+        print8.ls8:
+        printstr.ls8:
+        sctest.ls8:
+        stackoverflow.ls8:
