@@ -1,6 +1,7 @@
 """CPU functionality."""
 
 import sys
+import time
 
 class CPU:
     """Main CPU class."""
@@ -14,8 +15,8 @@ class CPU:
         #pointer/ program counter
         self.pc =  0
         #flags register
-        self.flags = [0] * 8
-
+        self.flags = 0b00000000
+        self.most_recently_compared_items_are_equal_to_each_other = False
 
     def ram_read(self, address):
         return self.ram[address]
@@ -92,6 +93,8 @@ class CPU:
         JEQ = 0b01010101
         JNE = 0b01010110
         JMP = 0b01010100
+        now = time.time()
+        too_long = now + 3
 
 
 
@@ -100,41 +103,47 @@ class CPU:
         self.reg[SP] = 0xF4
         i = 0
         while running:
+            if time.time() > too_long:
+                running = False
             i += 1
-            print(f'iteration {i}')
+            # print(f'iteration {i}')
             ir = self.ram[self.pc]
             #print(IR, self.pc)
             if ir == HLT:
                 running = False
 
             elif ir == CMP:
-                print('cmp happens')
+                # print('cmp happens')
                 operand_a = self.ram[self.pc + 1]
                 operand_b = self.ram[self.pc + 2]
+                self.flags = [0] * 8
                 if self.reg[operand_a] is self.reg[operand_b]:
-                    self.flags[-1] = 1
+                    self.flags = 0b00000001
+                    # self.most_recently_compared_items_are_equal_to_each_other = True
                 elif self.reg[operand_a] > self.reg[operand_b]:
-                    self.flags[-2] = 1
+                    self.flags = 0b00000010
                 else:
-                    self.flags[-3] = 1
+                    self.flags = 0b00000100
                 self.pc += 3
 
             elif ir == JEQ:
-                print('jeq happens')
+                # print('jeq happens')
                 operand_a = self.ram[self.pc + 1]
-                if self.flags[-1] is 1:
-                    self.pc = self.reg[self.ram[self.pc + 1]]
-                self.pc += 2
+                if self.flags is 0b00000001:
+                    self.pc = self.reg[operand_a]
+                else:
+                 self.pc += 2
 
             elif ir == JNE:
-                print('jne happens')
+                # print('jne happens')
                 operand_a = self.ram[self.pc + 1]
-                if self.flags[-1] == 0:
-                    self.pc = self.reg[self.ram[self.pc + 1]]
-                self.pc += 2
+                if not self.flags == 0b00000001:
+                    self.pc = self.reg[operand_a]
+                else:
+                    self.pc += 2
 
             elif ir == JMP:
-                print('jmp happens')
+                # print('jmp happens')
                 self.pc = self.reg[self.ram[self.pc + 1]]
                 # operand_a = self.ram[self.pc + 1]
                 # self.pc = operand_a
@@ -199,9 +208,9 @@ class CPU:
 
             # elif ir is JEQ :
             #     print('not sure what to do')
-            else:
-                print('unknown instruction', ir)
-                sys.exit(1)
+            # else:
+            #     print('unknown instruction', ir)
+            #     sys.exit(1)
 
 
 
